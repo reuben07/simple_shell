@@ -70,7 +70,11 @@ size_t count_env(char **env);
 char *_strcpy(char *dest, char *src);
 int put_int(int num);
 void reverse(char *s);
+<<<<<<< HEAD
 void _puts(char *s);
+=======
+int _puts(char *s);
+>>>>>>> c5fe276c09516dffd4b89dd92145c07eb563c16a
 int _putchar(char c);
 void *_realloc(void *ptr, size_t old_size, size_t new_size);
 int _isdigit(char *str);
@@ -78,4 +82,8 @@ int _putchar_err(char c);
 int _puts_norm(char *s);
 int put_int_norm(int num);
 
+<<<<<<< HEAD
 #endif /* _SHELL_H_*/ 
+=======
+#endif /* _SHELL_H_ */
+>>>>>>> c5fe276c09516dffd4b89dd92145c07eb563c16a
