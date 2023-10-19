@@ -1,47 +1,28 @@
 #include "Shell.h"
 
 /**
- * my_help - prints help information
- * @info: Structure containing potential arguments. It is used to maintain
- * constant function prototype.
- * Return: Always 0
- */
-
-int my_help(CommandInfo_t *info)
-{
-	char **arg_array;
-
-	arg_array = info->argv;
-	_puts("help call works. Function not yet implemented \n");
-	if (0)
-		_puts(*arg_array);
-	return (0);
-}
-
-/**
- * my_exit - Exits the shell.
- * @info: Structure containing potential arguments. Used to maintain
- *        constant function prototype.
- * Return: Exits with a given exit status
+ * exit_shell - Exits the shell.
+ * @info: Structure containing potential arguments.
+ *
+ * Return: Exits with a given exit status.
  *         (0) if info->argv[0] != "exit"
  */
-
-int my_exit(CommandInfo_t *info)
+int exit_shell(info_t *info)
 {
-	int exit_check;
+	int exit_code;
 
 	if (info->argv[1])
 	{
-		exit_check = error_atoi(info->argv[1]);
-		if (exit_check == -1)
+		exit_code = string_to_int(info->argv[1]);
+		if (exit_code == -1)
 		{
 			info->status = 2;
-			print_error(info, "Illegal number: ");
-			_eputs(info->argv[1]);
-			_eputchar('\n');
+			print_error(info, "Invalid number: ");
+			show_error_msg(info->argv[1]);
+			_write_char_to_stderr('\n');
 			return (1);
 		}
-		info->err_num = error_atoi(info->argv[1]);
+		info->err_num = string_to_int(info->argv[1]);
 		return (-2);
 	}
 	info->err_num = -1;
@@ -49,49 +30,67 @@ int my_exit(CommandInfo_t *info)
 }
 
 /**
- * my_cd - changes the current directory of the process
- * @info: Structure containing potential arguments. It is used to maintain
- * constant function prototype.
- * Return: Always 0
+ * _change_dir - Changes the current directory of the process.
+ * @info: Structure containing potential arguments.
+ *
+ * Return: Always 0.
  */
-int my_cd(CommandInfo_t *info)
+int _change_dir(info_t *info)
 {
-	char *s, *dir, buffer[1024];
-	int chdir_ret;
+	char *curr_dir, *target_dir, buffer[1024];
+	int chdir_result;
 
-	s = getcwd(buffer, 1024);
-	if (!s)
-		_puts("TODO: >>getcwd failure emsg here<<\n");
+	curr_dir = getcwd(buffer, 1024);
+	if (!curr_dir)
+		string_puts("TODO: >>Failure message here<<\n");
 	if (!info->argv[1])
 	{
-		dir = _getenv(info, "HOME=");
-		if (!dir)
-			chdir_ret = chdir((dir = _getenv(info, "PWD=")) ? dir : "/");
+		target_dir = _environment_variable(info, "HOME=");
+		if (!target_dir)
+			chdir_result = chdir((target_dir = _environment_variable(info, "PWD=")) ? target_dir : "/");
 		else
-			chdir_ret = chdir(dir);
+			chdir_result = chdir(target_dir);
 	}
-	else if (_strcmp(info->argv[1], "-") == 0)
+	else if (string_cmp(info->argv[1], "-") == 0)
 	{
-		if (!_getenv(info, "OLDPWD="))
+		if (!_environment_variable(info, "OLDPWD="))
 		{
-			_puts(s);
-			_putchar('\n');
+			string_puts(curr_dir);
+			write_char('\n');
 			return (1);
 		}
-		_puts(_getenv(info, "OLDPWD=")), _putchar('\n');
-		chdir_ret = chdir((dir = _getenv(info, "OLDPWD=")) ? dir : "/");
+		string_puts(_environment_variable(info, "OLDPWD=")), write_char('\n');
+		chdir_result = chdir((target_dir = _environment_variable(info, "OLDPWD=")) ? target_dir : "/");
 	}
 	else
-		chdir_ret = chdir(info->argv[1]);
-	if (chdir_ret == -1)
+		chdir_result = chdir(info->argv[1]);
+	if (chdir_result == -1)
 	{
-		print_error(info, "can't cd to %s", info->argv[1]);
-		_eputs(info->argv[1]), _eputchar('\n');
+		print_error(info, "Can't change directory!");
+		show_error_msg(info->argv[1]);
+		_write_char_to_stderr('\n');
 	}
 	else
 	{
-		_setenv(info, "OLDPWD", _getenv(info, "PWD="));
-		_setenv(info, "PWD", getcwd(buffer, 1024));
+		add_env_variable(info, "OLDPWD", _environment_variable(info, "PWD="));
+		add_env_variable(info, "PWD", getcwd(buffer, 1024));
 	}
+	return (0);
+}
+
+/**
+ * get_help - Provides help information.
+ * @info: Structure containing potential arguments.
+ *
+ * Return: Always 0.
+ */
+int get_help(info_t *info)
+{
+	char **arg_array;
+
+	arg_array = info->argv;
+	string_puts("Help function works\n");
+	if (0)
+		string_puts(*arg_array);
 	return (0);
 }
