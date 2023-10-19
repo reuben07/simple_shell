@@ -1,4 +1,5 @@
 #include "Shell.h"
+#include <string.h>
 
 /**
  * _myhistory - displays the history list, one command by line, preceded
@@ -8,7 +9,7 @@
  * Return: Always 0
  */
 
-int _myhistory(info_t *info)
+int _myhistory(CommandInfo_t *info)
 {
 	print_list(info->history);
 	return (0);
@@ -22,12 +23,12 @@ int _myhistory(info_t *info)
  * Return: Always 0 on success, 1 on error
  */
 
-int unset_alias(info_t *info, char *str)
+int unset_alias(CommandInfo_t *info, char *str)
 {
 	char *p, c;
 	int ret;
 
-	p = _strchr(str, '=');
+	p = strchr(str, '=');
 	if (!p)
 		return (1);
 	c = *p;
@@ -45,11 +46,12 @@ int unset_alias(info_t *info, char *str)
  *
  * Return: Always 0 on success, 1 on error
  */
-int set_alias(info_t *info, char *str)
+
+int set_alias(CommandInfo_t *info, char *str)
 {
 	char *p;
 
-	p = _strchr(str, '=');
+	p = strchr(str, '=');
 
 	if (!p)
 		return (1);
@@ -72,7 +74,7 @@ int print_alias(list_t *node)
 
 	if (node)
 	{
-		p = _strchr(node->str, '=');
+		p = strchr(node->str, '=');
 		for (a = node->str; a <= p; a++)
 			_putchar(*a);
 		_putchar('\'');
@@ -89,7 +91,7 @@ int print_alias(list_t *node)
  *          constant function prototype.
  * Return: Always 0
  */
-int _myalias(info_t *info)
+int _myalias(CommandInfo_t *info)
 {
 	int i = 0;
 	char *p = NULL;
@@ -107,7 +109,7 @@ int _myalias(info_t *info)
 	}
 	for (i = 1; info->argv[i]; i++)
 	{
-		p = _strchr(info->argv[i], '=');
+		p = strchr(info->argv[i], '=');
 		if (p)
 			set_alias(info, info->argv[i]);
 		else

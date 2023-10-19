@@ -6,7 +6,7 @@
  * Return: Always 0.
  */
 
-int print_environment(info_t *info)
+int print_environment(CommandInfo_t *info)
 {
 	print_string_list(info->env);
 	return 0;
@@ -19,7 +19,7 @@ int print_environment(info_t *info)
  * Return: The value of the environment variable.
  */
 
-char *get_environment_variable(info_t *info, const char *name)
+char *get_environment_variable(CommandInfo_t *info, const char *name)
 {
 	list_t *node = info->env;
 	char *value;
@@ -41,7 +41,7 @@ char *get_environment_variable(info_t *info, const char *name)
  * Return: 0 on success, 1 on failure.
  */
 
-int set_environment_variable(info_t *info)
+int set_environment_variable(CommandInfo_t *info)
 {
 	if (info->argc != 3)
 	{
@@ -61,7 +61,7 @@ int set_environment_variable(info_t *info)
  * Return: 0 on success, 1 on failure.
  */
 
-int unset_environment_variable(info_t *info)
+int unset_environment_variable(CommandInfo_t *info)
 {
 	int i;
 
@@ -83,7 +83,7 @@ int unset_environment_variable(info_t *info)
  * Return: 0 on success, 1 on failure.
  */
 
-int populate_environment_list(info_t *info)
+int populate_environment_list(CommandInfo_t *info)
 {
 	size_t i;
 	list_t *node = NULL;
